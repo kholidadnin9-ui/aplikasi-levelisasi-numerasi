@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Levelisasi Numerasi Kelas 2</title>
+    <style>
+        /* CSS tetap sama seperti sebelumnya */
+        * {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            margin-right: 5px;
+            border-radius: 5px 5px 0 0;
+        }
+        .tab.active {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .guru-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .guru-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .guru-item input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .btn {
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-report {
+            background-color: #2ecc71;
+        }
+        .btn-report:hover {
+            background-color: #27ae60;
+        }
+        .btn-export {
+            background-color: #e67e22;
+        }
+        .btn-export:hover {
+            background-color: #d35400;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            background-color: #2ecc71;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+        .notification.error {
+            background-color: #e74c3c;
+        }
+        .student-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .student-card {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .student-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .student-name-input {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        .student-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .student-actions select {
+            flex: 1;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .btn-small {
+            padding: 5px 10px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        .btn-small:hover {
+            opacity: 0.8;
+        }
+        .btn-small.save { background-color: #2ecc71; }
+        .btn-small.cancel { background-color: #e74c3c; }
+        .btn-small.print { background-color: #e67e22; }
+        .btn-small.edit { background-color: #3498db; }
+        
+        .guru-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .guru-button {
+            padding: 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .guru-button:hover {
+            background-color: #2980b9;
+        }
+        .guru-button.active {
+            background-color: #2c3e50;
+        }
+        .guru-students {
+            display: none;
+            margin-top: 20px;
+        }
+        .guru-students.active {
+            display: block;
+        }
+        .report-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .report-container {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            display: none;
+        }
+        .report-container.active {
+            display: block;
+        }
+        .report-container h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .chart-container {
+            margin-bottom: 20px;
+        }
+        .chart {
+            display: flex;
+            align-items: flex-end;
+            height: 200px;
+            border-left: 2px solid #333;
+            border-bottom: 2px solid #333;
+            padding-left: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .bar {
+            flex: 1;
+            margin: 0 5px;
+            background-color: #3498db;
+            border-radius: 3px 3px 0 0;
+            position: relative;
+            transition: height 0.5s ease;
+        }
+        .bar:hover {
+            background-color: #2980b9;
+        }
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+        }
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        .bar-percentage {
+            position: absolute;
+            top: -45px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+            border-radius: 3px;
+        }
+        .summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 5px;
+        }
+        .summary h4 {
+            margin-top: 0;
+        }
+        .summary p {
+            margin: 5px 0;
+        }
+        .close-report {
+            float: right;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .close-report:hover {
+            background-color: #c0392b;
+        }
+        .export-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .export-card {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .export-card h4 {
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .export-card p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .export-card .btn {
+            width: 100%;
+            margin-top: 0;
+        }
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #3498db;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-content, .print-content * {
+                visibility: visible;
+            }
+            .print-content {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+                z-index: 9999;
+            }
+            .print-header {
+                text-align: center;
+                margin-bottom: 30px;
+                border-bottom: 2px solid #2c3e50;
+                padding-bottom: 15px;
+            }
+            .print-info {
+                margin-bottom: 30px;
+            }
+            .print-footer {
+                margin-top: 40px;
+                text-align: right;
+                font-size: 12px;
+                color: #666;
+                border-top: 1px solid #ddd;
+                padding-top: 10px;
+            }
+            .print-title {
+                font-size: 24px;
+                font-weight: bold;
+                color: #2c3e50;
+                margin-bottom: 10px;
+            }
+            .print-data {
+                display: flex;
+                flex-wrap: wrap;
+                margin: 20px 0;
+            }
+            .print-data-item {
+                width: 50%;
+                padding: 15px 0;
+                font-size: 16px;
+            }
+            .print-data-label {
+                font-weight: bold;
+                color: #2c3e50;
+                display: inline-block;
+                width: 150px;
+            }
+            .print-data-value {
+                color: #333;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Aplikasi Levelisasi Numerasi Kelas 2</h1>
+        
+        <div class="master-data">
+            <h2>Master Data Guru Pembimbing</h2>
+            <div id="guruLoading" class="loading">
+                <div class="spinner"></div>
+            </div>
+            <div class="guru-grid" id="guruGrid" style="display: none;">
+                <!-- Guru items will be generated here -->
+            </div>
+            <button class="btn" onclick="saveGuruData()">Simpan Data Guru</button>
+            
+            <div class="report-buttons">
+                <button class="btn btn-report" onclick="showReport('kelas')">Laporan Progres per Kelas</button>
+                <button class="btn btn-report" onclick="showReport('level')">Laporan Progres per Level</button>
+                <button class="btn btn-report" onclick="showReport('all')">Laporan Progres Seluruh Kelas</button>
+                <button class="btn btn-report" onclick="showReport('guru')">Laporan Progres per Guru Pembimbing</button>
+            </div>
+            
+            <div id="reportKelas" class="report-container">
+                <button class="close-report" onclick="closeReport('kelas')">×</button>
+                <h3>Laporan Progres per Kelas</h3>
+                <div class="chart-container">
+                    <div class="chart" id="chartKelas"></div>
+                    <div class="legend" id="legendKelas"></div>
+                </div>
+                <div class="summary" id="summaryKelas"></div>
+            </div>
+            
+            <div id="reportLevel" class="report-container">
+                <button class="close-report" onclick="closeReport('level')">×</button>
+                <h3>Laporan Progres per Level</h3>
+                <div class="chart-container">
+                    <div class="chart" id="chartLevel"></div>
+                    <div class="legend" id="legendLevel"></div>
+                </div>
+                <div class="summary" id="summaryLevel"></div>
+            </div>
+            
+            <div id="reportAll" class="report-container">
+                <button class="close-report" onclick="closeReport('all')">×</button>
+                <h3>Laporan Progres Seluruh Kelas</h3>
+                <div class="chart-container">
+                    <div class="chart" id="chartAll"></div>
+                    <div class="legend" id="legendAll"></div>
+                </div>
+                <div class="summary" id="summaryAll"></div>
+            </div>
+            
+            <div id="reportGuru" class="report-container">
+                <button class="close-report" onclick="closeReport('guru')">×</button>
+                <h3>Laporan Progres per Guru Pembimbing</h3>
+                <div class="chart-container">
+                    <div class="chart" id="chartGuru"></div>
+                    <div class="legend" id="legendGuru"></div>
+                </div>
+                <div class="summary" id="summaryGuru"></div>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="openTab(event, 'kelasTab')">Data Kelas</div>
+            <div class="tab" onclick="openTab(event, 'guruTab')">Data Guru Pembimbing</div>
+            <div class="tab" onclick="openTab(event, 'exportTab')">Ekspor Data</div>
+        </div>
+        
+        <div id="kelasTab" class="tab-content active">
+            <div class="tabs">
+                <div class="tab active" onclick="openSubTab(event, 'kelas2A')">Kelas 2A</div>
+                <div class="tab" onclick="openSubTab(event, 'kelas2B')">Kelas 2B</div>
+                <div class="tab" onclick="openSubTab(event, 'kelas2C')">Kelas 2C</div>
+                <div class="tab" onclick="openSubTab(event, 'kelas2D')">Kelas 2D</div>
+                <div class="tab" onclick="openSubTab(event, 'kelas2E')">Kelas 2E</div>
+                <div class="tab" onclick="openSubTab(event, 'kelas2F')">Kelas 2F</div>
+            </div>
+            
+            <div id="kelas2A" class="tab-content active">
+                <div id="kelas2A-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                <h3>Kelas 2A</h3>
+                <div id="kelas2A-students" class="student-list" style="display: none;"></div>
+            </div>
+            <div id="kelas2B" class="tab-content">
+                <div id="kelas2B-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                <h3>Kelas 2B</h3>
+                <div id="kelas2B-students" class="student-list" style="display: none;"></div>
+            </div>
+            <div id="kelas2C" class="tab-content">
+                <div id="kelas2C-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                <h3>Kelas 2C</h3>
+                <div id="kelas2C-students" class="student-list" style="display: none;"></div>
+            </div>
+            <div id="kelas2D" class="tab-content">
+                <div id="kelas2D-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                <h3>Kelas 2D</h3>
+                <div id="kelas2D-students" class="student-list" style="display: none;"></div>
+            </div>
+            <div id="kelas2E" class="tab-content">
+                <div id="kelas2E-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                <h3>Kelas 2E</h3>
+                <div id="kelas2E-students" class="student-list" style="display: none;"></div>
+            </div>
+            <div id="kelas2F" class="tab-content">
+                <div id="kelas2F-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                <h3>Kelas 2F</h3>
+                <div id="kelas2F-students" class="student-list" style="display: none;"></div>
+            </div>
+        </div>
+        
+        <div id="guruTab" class="tab-content">
+            <h2>Pilih Guru Pembimbing</h2>
+            <div id="guruButtons-loading" class="loading">
+                <div class="spinner"></div>
+            </div>
+            <div class="guru-buttons" id="guruButtons" style="display: none;"></div>
+            <div id="guruStudentsContainer"></div>
+        </div>
+        
+        <div id="exportTab" class="tab-content">
+            <h2>Ekspor Data ke Excel</h2>
+            <p>Pilih jenis data yang ingin Anda ekspor ke format Excel:</p>
+            <div class="export-grid">
+                <div class="export-card">
+                    <h4>Data Siswa Lengkap</h4>
+                    <p>Ekspor semua data siswa beserta level dan guru pembimbingnya</p>
+                    <button class="btn btn-export" onclick="exportAllStudents()">Ekspor Data Siswa</button>
+                </div>
+                <div class="export-card">
+                    <h4>Data per Kelas</h4>
+                    <p>Ekspor data siswa dikelompokkan berdasarkan kelas</p>
+                    <button class="btn btn-export" onclick="exportDataByClass()">Ekspor per Kelas</button>
+                </div>
+                <div class="export-card">
+                    <h4>Data per Guru</h4>
+                    <p>Ekspor data siswa dikelompokkan berdasarkan guru pembimbing</p>
+                    <button class="btn btn-export" onclick="exportDataByGuru()">Ekspor per Guru</button>
+                </div>
+                <div class="export-card">
+                    <h4>Data per Level</h4>
+                    <p>Ekspor data siswa dikelompokkan berdasarkan level numerasi</p>
+                    <button class="btn btn-export" onclick="exportDataByLevel()">Ekspor per Level</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="notification" class="notification"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Konfigurasi Firebase
+        const firebaseConfig = {
+          apiKey: "AIzaSyDUYl6Su3IUJn0ntJEi0eVT1fzM0ZO6qRI",
+          authDomain: "aplikasi-levelisasi.firebaseapp.com",
+          databaseURL: "https://aplikasi-levelisasi-default-rtdb.asia-southeast1.firebasedatabase.app",
+          projectId: "aplikasi-levelisasi",
+          storageBucket: "aplikasi-levelisasi.firebasestorage.app",
+          messagingSenderId: "162180826555",
+          appId: "1:162180826555:web:921cf4b4dab45df7cdf09e"
+        };
+
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // Data guru dan siswa akan diambil dari server
+        let guruData = [];
+        let studentsData = [];
+        
+        // Fungsi untuk mengambil data dari Firestore
+        async function fetchData(collection) {
+            try {
+                const snapshot = await db.collection(collection).get();
+                const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                return data;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                showNotification('Gagal mengambil data dari server. Silakan coba lagi.', true);
+                return null;
+            }
+        }
+        
+        // Fungsi untuk mengirim data ke Firestore
+        async function saveData(collection, docId, data) {
+            try {
+                await db.collection(collection).doc(docId).set(data, { merge: true });
+                return true;
+            } catch (error) {
+                console.error('Error saving data:', error);
+                showNotification('Gagal menyimpan data ke server. Silakan coba lagi.', true);
+                return false;
+            }
+        }
+        
+        // Inisialisasi aplikasi
+        async function initApp() {
+            // Cek apakah data guru sudah ada, jika tidak, inisialisasi
+            const gurusSnapshot = await db.collection('gurus').limit(1).get();
+            if (gurusSnapshot.empty) {
+                await initializeData();
+            }
+
+            // Ambil data guru
+            const gurus = await fetchData('gurus');
+            if (gurus) {
+                guruData = gurus.sort((a, b) => a.id - b.id);
+                renderGuruMasterData();
+            }
+            
+            // Ambil data siswa
+            const students = await fetchData('students');
+            if (students) {
+                studentsData = students.sort((a, b) => a.class.localeCompare(b.class) || a.id.localeCompare(b.id));
+                renderStudentsByClass();
+                renderGuruButtons();
+            }
+            
+            // Sembunyikan loading dan tampilkan konten
+            document.getElementById('guruLoading').style.display = 'none';
+            document.getElementById('guruGrid').style.display = 'grid';
+            
+            const classes = ["2A", "2B", "2C", "2D", "2E", "2F"];
+            classes.forEach(className => {
+                const loadingElement = document.getElementById(`kelas${className}-loading`);
+                const studentsElement = document.getElementById(`kelas${className}-students`);
+                if (loadingElement) loadingElement.style.display = 'none';
+                if (studentsElement) studentsElement.style.display = 'grid';
+            });
+            
+            const guruButtonsLoading = document.getElementById('guruButtons-loading');
+            const guruButtons = document.getElementById('guruButtons');
+            if (guruButtonsLoading) guruButtonsLoading.style.display = 'none';
+            if (guruButtons) guruButtons.style.display = 'grid';
+
+            // Setup real-time listener untuk perubahan data
+            setupRealtimeListeners();
+        }
+
+        // Fungsi untuk menginisialisasi data awal
+        async function initializeData() {
+            const initialGurus = [
+                { id: 1, name: "Pak Ridho" }, { id: 2, name: "Pak Yusep" }, { id: 3, name: "Pak Widodo" },
+                { id: 4, name: "Pak Chandra" }, { id: 5, name: "Pak Cipto" }, { id: 6, name: "Pak Nana" },
+                { id: 7, name: "Bu Srimel" }, { id: 8, name: "Bu Wuri" }, { id: 9, name: "Bu Zaitun" },
+                { id: 10, name: "Bu Lina" }, { id: 11, name: "Bu Yanti" }, { id: 12, name: "Bu Nurul" }
+            ];
+            
+            const kelas2A = ["ALDEBARAN FATHIR AHMAD", "ALMEERA ASHADIYA KHAIRUNNISA", "AYRA ALZAHSY ZEANISSA", "AZKA QIANU FAZA", "CAHYA BINAR MENTARI", "DYARA SHANUM MADINA", "FAZIAN AQMAR SUBHAN", "HAFIDZAH NURHASANAH", "HAMZAH KHALIFA JUNDALLAH", "HANIF DANIAR IBRAHIM", "KANESTRI HAYU NIRWASITA", "KIAGUS FAEYZA ALZAHRAWI", "MARYAM AL MAQDISIAH", "MIKHAYLA ALMAHYRA MISSHALL AFIF", "MIKHAYLA GAYATRI CINDARBUMI", "MUHAMMAD ARKHAN ALFATIH", "MUHAMMAD DAFFA AL QARNI", "MUHAMMAD FAUZAN ABDURROHMAN", "MUHAMMAD SHAQUILLE AL HUSNA", "NABILAH MITSLA NADA", "RAFA ELANO ATHALLASYAH", "RAZKA AFIFI", "SHAWQI RASYA GARNAMA", "SHEZA ARARINDA ADAIR", "YUMNA HUMAIRA AZ-ZAHRA", "ZAIRA WULIDATCH SALSABILA"];
+            const kelas2B = ["ABDUL AKRAM AL HAFIZH", "AISYAH TAQIYYA AZ ZAHRA", "AULIA NURUL PAZRIAH", "FATHAN AKBAR FIRDAUS PRAWIRA", "FATHIYA AMANY SYAIMA", "FITRIA ALINA", "GHANI ALTHAF KAISAN", "KEANE GIBRAN AL ZAHRAN", "KEISHA ZHAFIRA NISRINA", "LUTHFI DZIKRA MOHAMMAD ATTAQI", "MUHAMMAD ABYAN BYAKTA", "MUHAMMAD AZIZAN SYABANI IRAWAN", "MUHAMMAD FAEYZA ATHAFARIZ", "MUHAMMAD GHAZI FATHAN YULIS", "MUHAMMAD NAZHRIL HAQ EL-EMIIR", "MUHAMMAD RAIZEL ARRIFY EL HADI", "MUHAMMAD ZHAKI AL FATIH", "NANDYA ADNY PRAMESWARI", "NAYYARA ARSYILA SYAHRI", "RASYID ANGGARA SYAMAN SHOLEH", "SALAHUDDIN AFNAN AL AYYUBI", "SHAKILA ALMAHYRA MADINA", "SITI SYARIFAH MUDAIM", "SYARIFAH NURUL IZZAH", "TALITA UFAIRA FASIHA", "YUMNA ALEA FIRDAUS"];
+            const kelas2C = ["ADZKIYA YUMNA HUMAIRA", "ALDEBARAN MUHAMMAD MARPAUNG", "AMRU RAYYANKA AKBAR", "ARSYLLA ZYANA HERYADI", "ASSYIFA SHABIRA AZZAHRA", "DHIAU MUHAMMAD QUTBY HIBRIZI", "ELVYRA SIENNA PUTRI", "HARUMI NANDARA SAHWAHITA", "KHAIRAN HIFDZI LUTHFY", "LUTHFIA DZAKIRA KHOIRUNNISA", "MIKHAYLA QAIRINA PUTERI", "MUHAMMAD ATHAYA IBROHIM", "MUHAMAD DAVIN RYZKEANO YUSUF", "MUHAMMAD ALI IVANDIEN", "MUHAMMAD ALTHARAFISQI", "MUHAMMAD ATTAKI ZAIN", "MUHAMMAD NAZRIL ARROFI", "MUHAMMAD RIZQI ABDURRAHMAN", "NADIA ALYSSA MARYAM MUMTAZAH", "NADIA AZZAHRA ANDRIYAN", "PUTRI RAMSHA NASYAUQI", "QIANDRA ELMYRA SHANUM", "RAZZAN MUHAMMAD UMAIR", "REINNA CETTA REKSATMAJA", "TANIA SYAQILLA ADANNADI"];
+            const kelas2D = ["ABDURRAHMAN RAIHAN RIADI", "ADZKIA HAYFA SYAHIRA", "AFSHEENA FAZIA SYARIF", "ALBANIA AUBREE MUSTHAFAA", "ATHALLAH SHAIL AR RAASYID", "FADHLULLAH ABDURRAHMAN ROSYIDI", "FILLEA CANAN QAIREEN", "GANESHA FATHARIAN ARGARAMA", "HAFIZH PRAWIRA", "HANFIA NAZIHA MUMTAZAH", "IBRAHIM KHOLILURRAHMAN", "ILARIO ATHAYA RAFFASYA JAYANEGARA", "MUHAMMAD HAUFANHAZZA RAMADHAN", "MUHAMMAD HIZAM SHAQIL", "MUHAMAD RAYYAN ALVARA NIZAM", "RANIA TAMINAIRA GHANIA SANDY", "RASHDAN KHALIF PERMADI", "RAYYANKA ABISALI ZAMZAMI", "RIFDA QONITA KHAIRA AS SYIFA", "SALIMAH NUR SA'ADAH", "SARAH ALMIRA", "SEIRA AQILA PUTRI ASWIDINNOOR", "SHEREN FATIMAH SHABIRA", "SOFIA FARHAT ALBAKRI", "ZAHRA ALFATHUNISA"];
+            const kelas2E = ["ABDULLAH MALIK AZMI", "AHMAD HANIF AL FAYYADH", "ALBARRA LENTERA JUANG GONDEWA", "ALISHA ANINDITA AZZAHRA", "ARETHA QIRANI UBAIDILLAH", "ARXAVIER KHALIF AFRIZAL", "BINTANG ATHAYA HAUFANHAZZA SUBROTO", "DELISHA NURADI", "DZAKY AHMAD ARRAZI", "FATHIN LANA MIKAYLA", "HAIKAL IBRAHIM ALGHIFARI", "ISAURA JULIA SALAMAH", "KHAIRI FARHANA", "MUHAMMAD FAQIH RIDWAN", "MUHAMMAD IZZ IBADURRAHMAN AL HANAN", "MUHAMMAD KAHFI ABIZAR", "MUHAMMAD SALMAN ALFARIZI", "MUHAMMAD SYAMIL IZZUDDIN EL HAQ", "NADHIRA ASHLEY MISEL", "NISRINA ADIFA SHOLIHAT", "RANAYA AZZAHRA WIBOWO", "SAFINA AULIA FATIHAH", "SITI HAFSHAH AHDIYATUNNISA", "SYAFA KAMILA AZZAHRA", "ZEANISA SHABIRA ELGITA"];
+            const kelas2F = ["ABIZARD KHALID QIANNA RAHMADI", "ALFASHA ALVERO PANDU SEMBIRING MILALA", "AMIRA HARITS MARTA", "ANNASYA SYIFFA YULIANA", "ATHIYA ZAHRA KAMALIA", "AULIYA KHAIRUNNISA", "HAFA SHAFIYYAH", "HANUM RAMADHANI RIZKI", "IBRAHIM ZAVIER UHUD", "KHODIJAH LAIQA LUTFIYYAH QURRATAAYUN", "MAHEZA BINTANG KASTARA ISNADI", "MARZIA ARSYLA AZKADINA", "MUHAMMAD AMAR SAYYIDUROHMAN", "MUHAMMAD ARRAZKA ABIDIN", "MUHAMMAD BRAWIRA RADINKA", "MUHAMMAD HIROSHI ALFATIH", "MUHAMMAD SHOLAHUDDIN ALQURANI", "MUHAMMAD ZAIDAN MUBARAK", "NAHLA MIWATTA", "OMAR DANISH PUTRA UTAMA", "OSWALDAYAH IBRA GHAISAN", "RAISA ALMAHYRA ARYASA", "SALSABILA AZIZAH", "SYAFEEA RAISYA AZKADINA", "UNAISAH NUSAIBAH"];
+            
+            const allStudents = [
+                ...kelas2A.map((name, i) => ({ id: `2A-${i + 1}`, name, class: "2A", level: 1, guru: initialGurus[Math.floor(Math.random() * initialGurus.length)].id })),
+                ...kelas2B.map((name, i) => ({ id: `2B-${i + 1}`, name, class: "2B", level: 1, guru: initialGurus[Math.floor(Math.random() * initialGurus.length)].id })),
+                ...kelas2C.map((name, i) => ({ id: `2C-${i + 1}`, name, class: "2C", level: 1, guru: initialGurus[Math.floor(Math.random() * initialGurus.length)].id })),
+                ...kelas2D.map((name, i) => ({ id: `2D-${i + 1}`, name, class: "2D", level: 1, guru: initialGurus[Math.floor(Math.random() * initialGurus.length)].id })),
+                ...kelas2E.map((name, i) => ({ id: `2E-${i + 1}`, name, class: "2E", level: 1, guru: initialGurus[Math.floor(Math.random() * initialGurus.length)].id })),
+                ...kelas2F.map((name, i) => ({ id: `2F-${i + 1}`, name, class: "2F", level: 1, guru: initialGurus[Math.floor(Math.random() * initialGurus.length)].id })),
+            ];
+
+            // Batch write untuk performa lebih baik
+            const batch = db.batch();
+            initialGurus.forEach(guru => batch.set(db.collection('gurus').doc(guru.id.toString()), guru));
+            allStudents.forEach(student => batch.set(db.collection('students').doc(student.id), student));
+            await batch.commit();
+        }
+
+        // Setup listener untuk update real-time
+        function setupRealtimeListeners() {
+            db.collection('students').onSnapshot(snapshot => {
+                studentsData = [];
+                snapshot.forEach(doc => {
+                    studentsData.push({ id: doc.id, ...doc.data() });
+                });
+                studentsData.sort((a, b) => a.class.localeCompare(b.class) || a.id.localeCompare(b.id));
+                renderStudentsByClass();
+                renderGuruButtons();
+            });
+
+            db.collection('gurus').onSnapshot(snapshot => {
+                guruData = [];
+                snapshot.forEach(doc => {
+                    guruData.push({ id: doc.id, ...doc.data() });
+                });
+                guruData.sort((a, b) => a.id - b.id);
+                renderGuruMasterData();
+                renderStudentsByClass(); // Render ulang untuk update dropdown guru
+            });
+        }
+        
+        // Render master data guru
+        function renderGuruMasterData() {
+            const guruGrid = document.getElementById('guruGrid');
+            guruGrid.innerHTML = '';
+            guruData.forEach(guru => {
+                const guruItem = document.createElement('div');
+                guruItem.className = 'guru-item';
+                guruItem.innerHTML = `<input type="text" id="guru-${guru.id}" value="${guru.name}">`;
+                guruGrid.appendChild(guruItem);
+            });
+        }
+        
+        // Simpan data guru
+        async function saveGuruData() {
+            for (const guru of guruData) {
+                const input = document.getElementById(`guru-${guru.id}`);
+                if (input) {
+                    const success = await saveData('gurus', guru.id, { ...guru, name: input.value });
+                    if (!success) return; // Stop if there's an error
+                }
+            }
+            showNotification("Data guru berhasil disimpan!");
+        }
+        
+        // Render tombol guru
+        function renderGuruButtons() {
+            const guruButtonsContainer = document.getElementById('guruButtons');
+            guruButtonsContainer.innerHTML = '';
+            guruData.forEach(guru => {
+                const guruStudents = studentsData.filter(student => student.guru == guru.id);
+                const button = document.createElement('button');
+                button.className = 'guru-button';
+                button.textContent = `${guru.name} (${guruStudents.length} siswa)`;
+                button.onclick = () => showGuruStudents(guru.id);
+                guruButtonsContainer.appendChild(button);
+            });
+        }
+        
+        // Tampilkan siswa berdasarkan guru
+        function showGuruStudents(guruId) {
+            const guru = guruData.find(g => g.id == guruId);
+            if (!guru) return;
+            
+            const buttons = document.querySelectorAll('.guru-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const guruStudents = studentsData.filter(student => student.guru == guruId);
+            const container = document.getElementById('guruStudentsContainer');
+            container.innerHTML = `
+                <div class="guru-students active">
+                    <h3>Siswa Bimbingan ${guru.name}</h3>
+                    <div class="student-list" id="guru-${guruId}-students"></div>
+                </div>
+            `;
+            
+            const studentsContainer = document.getElementById(`guru-${guruId}-students`);
+            guruStudents.forEach(student => {
+                const studentCard = document.createElement('div');
+                studentCard.className = 'student-card';
+                studentCard.innerHTML = `
+                    <div class="student-name">
+                        <span id="guru-name-${student.id}">${student.name} (${student.class})</span>
+                        <button class="btn-small edit" onclick="editStudentNameInGuru('${student.id}')">Edit</button>
+                        <button class="btn-small print" onclick="printStudentReport('${student.id}')">Cetak</button>
+                    </div>
+                    <div class="student-actions">
+                        <select id="guru-level-${student.id}" onchange="updateStudentLevel('${student.id}', this.value)">
+                            <option value="1" ${student.level == 1 ? 'selected' : ''}>Level 1</option>
+                            <option value="2" ${student.level == 2 ? 'selected' : ''}>Level 2</option>
+                            <option value="3" ${student.level == 3 ? 'selected' : ''}>Level 3</option>
+                        </select>
+                        <select id="guru-guru-${student.id}" onchange="updateStudentGuru('${student.id}', this.value)">
+                            ${guruData.map(g => `<option value="${g.id}" ${student.guru == g.id ? 'selected' : ''}>${g.name}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+                studentsContainer.appendChild(studentCard);
+            });
+        }
+        
+        // Render siswa per kelas
+        function renderStudentsByClass() {
+            const classes = ["2A", "2B", "2C", "2D", "2E", "2F"];
+            classes.forEach(className => {
+                const container = document.getElementById(`kelas${className}-students`);
+                if (!container) return;
+                container.innerHTML = '';
+                const classStudents = studentsData.filter(student => student.class === className);
+                classStudents.forEach(student => {
+                    const studentCard = document.createElement('div');
+                    studentCard.className = 'student-card';
+                    studentCard.innerHTML = `
+                        <div class="student-name">
+                            <span id="name-${student.id}">${student.name}</span>
+                            <button class="btn-small edit" onclick="editStudentName('${student.id}')">Edit</button>
+                            <button class="btn-small print" onclick="printStudentReport('${student.id}')">Cetak</button>
+                        </div>
+                        <div class="student-actions">
+                            <select id="level-${student.id}" onchange="updateStudentLevel('${student.id}', this.value)">
+                                <option value="1" ${student.level == 1 ? 'selected' : ''}>Level 1</option>
+                                <option value="2" ${student.level == 2 ? 'selected' : ''}>Level 2</option>
+                                <option value="3" ${student.level == 3 ? 'selected' : ''}>Level 3</option>
+                            </select>
+                            <select id="guru-${student.id}" onchange="updateStudentGuru('${student.id}', this.value)">
+                                ${guruData.map(guru => `<option value="${guru.id}" ${student.guru == guru.id ? 'selected' : ''}>${guru.name}</option>`).join('')}
+                            </select>
+                        </div>
+                    `;
+                    container.appendChild(studentCard);
+                });
+            });
+        }
+        
+        // --- FUNGSI EDIT NAMA ---
+        function editStudentName(studentId) {
+            const student = studentsData.find(s => s.id === studentId);
+            if (!student) return;
+            const nameElement = document.getElementById(`name-${studentId}`);
+            const currentName = student.name;
+            nameElement.innerHTML = `
+                <input type="text" class="student-name-input" id="input-${studentId}" value="${currentName}">
+                <button class="btn-small save" onclick="saveStudentName('${studentId}')">Simpan</button>
+                <button class="btn-small cancel" onclick="cancelEditStudentName('${studentId}', '${currentName.replace(/'/g, "\\'")}')">Batal</button>
+            `;
+            document.getElementById(`input-${studentId}`).focus();
+        }
+        function editStudentNameInGuru(studentId) {
+            const student = studentsData.find(s => s.id === studentId);
+            if (!student) return;
+            const nameElement = document.getElementById(`guru-name-${studentId}`);
+            const currentName = `${student.name} (${student.class})`;
+            nameElement.innerHTML = `
+                <input type="text" class="student-name-input" id="guru-input-${studentId}" value="${student.name}">
+                <button class="btn-small save" onclick="saveStudentNameInGuru('${studentId}')">Simpan</button>
+                <button class="btn-small cancel" onclick="cancelEditStudentNameInGuru('${studentId}', '${currentName.replace(/'/g, "\\'")}')">Batal</button>
+            `;
+            document.getElementById(`guru-input-${studentId}`).focus();
+        }
+        async function saveStudentName(studentId) {
+            const student = studentsData.find(s => s.id === studentId);
+            if (!student) return;
+            const newName = document.getElementById(`input-${studentId}`).value.trim();
+            if (newName === '') { showNotification("Nama siswa tidak boleh kosong!", true); return; }
+            
+            const success = await saveData('students', studentId, { ...student, name: newName });
+            if (success) {
+                showNotification(`Nama siswa berhasil diubah menjadi "${newName}"`);
+            }
+        }
+        async function saveStudentNameInGuru(studentId) {
+            const student = studentsData.find(s => s.id === studentId);
+            if (!student) return;
+            const newName = document.getElementById(`guru-input-${studentId}`).value.trim();
+            if (newName === '') { showNotification("Nama siswa tidak boleh kosong!", true); return; }
+            
+            const success = await saveData('students', studentId, { ...student, name: newName });
+            if (success) {
+                showNotification(`Nama siswa berhasil diubah menjadi "${newName}"`);
+            }
+        }
+        function cancelEditStudentName(studentId, originalName) {
+            const nameElement = document.getElementById(`name-${studentId}`);
+            nameElement.innerHTML = `${originalName}<button class="btn-small edit" onclick="editStudentName('${studentId}')">Edit</button><button class="btn-small print" onclick="printStudentReport('${student.id}')">Cetak</button>`;
+        }
+        function cancelEditStudentNameInGuru(studentId, originalName) {
+            const nameElement = document.getElementById(`guru-name-${studentId}`);
+            nameElement.innerHTML = `${originalName}<button class="btn-small edit" onclick="editStudentNameInGuru('${student.id}')">Edit</button><button class="btn-small print" onclick="printStudentReport('${student.id}')">Cetak</button>`;
+        }
+        
+        // --- FUNGSI UPDATE DATA ---
+        async function updateStudentLevel(studentId, newLevel) {
+            const student = studentsData.find(s => s.id === studentId);
+            if (student) {
+                const success = await saveData('students', studentId, { ...student, level: parseInt(newLevel) });
+                if (success) {
+                    showNotification(`Level ${student.name} diperbarui menjadi Level ${newLevel}`);
+                }
+            }
+        }
+        async function updateStudentGuru(studentId, newGuruId) {
+            const student = studentsData.find(s => s.id === studentId);
+            const guru = guruData.find(g => g.id == newGuruId);
+            if (student && guru) {
+                const success = await saveData('students', studentId, { ...student, guru: newGuruId });
+                if (success) {
+                    showNotification(`${student.name} dipindahkan ke bimbingan ${guru.name}`);
+                }
+            }
+        }
+        
+        // --- FUNGSI TAB ---
+        function openTab(evt, tabName) {
+            const tabContents = document.querySelectorAll('.container > .tab-content');
+            const tabs = document.querySelectorAll('.container > .tabs > .tab');
+            tabContents.forEach(tc => tc.classList.remove('active'));
+            tabs.forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+        function openSubTab(evt, tabName) {
+            const tabContents = document.querySelectorAll('#kelasTab > .tab-content');
+            const tabs = document.querySelectorAll('#kelasTab > .tabs > .tab');
+            tabContents.forEach(tc => tc.classList.remove('active'));
+            tabs.forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+        
+        // --- NOTIFIKASI ---
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = isError ? 'notification error' : 'notification';
+            notification.style.display = 'block';
+            setTimeout(() => { notification.style.display = 'none'; }, 3000);
+        }
+        
+        // --- FUNGSI LAPORAN ---
+        function showReport(reportType) {
+            document.querySelectorAll('.report-container').forEach(report => report.classList.remove('active'));
+            document.getElementById(`report${reportType.charAt(0).toUpperCase() + reportType.slice(1)}`).classList.add('active');
+            switch(reportType) { case 'kelas': generateKelasReport(); break; case 'level': generateLevelReport(); break; case 'all': generateAllReport(); break; case 'guru': generateGuruReport(); break; }
+        }
+        function closeReport(reportType) { document.getElementById(`report${reportType.charAt(0).toUpperCase() + reportType.slice(1)}`).classList.remove('active'); }
+        
+        function generateKelasReport() {
+            const classes = ["2A", "2B", "2C", "2D", "2E", "2F"];
+            const classData = classes.map(className => {
+                const classStudents = studentsData.filter(student => student.class === className);
+                return { name: className, count: classStudents.length, percentage: (classStudents.length / studentsData.length * 100).toFixed(1) };
+            });
+            renderChart('chartKelas', classData, '#3498db');
+            renderLegend('legendKelas', classData, '#3498db');
+            renderSummary('summaryKelas', classData, 'kelas');
+        }
+        function generateLevelReport() {
+            const levelData = [{ name: 'Level 1', count: 0 }, { name: 'Level 2', count: 0 }, { name: 'Level 3', count: 0 }];
+            studentsData.forEach(student => levelData[student.level - 1].count++);
+            levelData.forEach(level => level.percentage = (level.count / studentsData.length * 100).toFixed(1));
+            const colors = ['#e74c3c', '#f39c12', '#2ecc71'];
+            renderChart('chartLevel', levelData, colors);
+            renderLegend('legendLevel', levelData, colors);
+            renderSummary('summaryLevel', levelData, 'level');
+        }
+        function generateAllReport() {
+            const classes = ["2A", "2B", "2C", "2D", "2E", "2F"];
+            const allData = classes.map(className => {
+                const classStudents = studentsData.filter(student => student.class === className);
+                const levelCounts = [0, 0, 0];
+                classStudents.forEach(student => levelCounts[student.level - 1]++);
+                return { name: className, level1: levelCounts[0], level2: levelCounts[1], level3: levelCounts[2], total: classStudents.length };
+            });
+            renderStackedChart('chartAll', allData);
+            renderStackedLegend('legendAll');
+            renderAllSummary('summaryAll', allData);
+        }
+        function generateGuruReport() {
+            const guruReportData = guruData.map(guru => {
+                const guruStudents = studentsData.filter(student => student.guru == guru.id);
+                return { name: guru.name, count: guruStudents.length, percentage: (guruStudents.length / studentsData.length * 100).toFixed(1) };
+            });
+            renderChart('chartGuru', guruReportData, '#9b59b6');
+            renderLegend('legendGuru', guruReportData, '#9b59b6');
+            renderSummary('summaryGuru', guruReportData, 'guru');
+        }
+        
+        function renderChart(chartId, data, colors) {
+            const chartContainer = document.getElementById(chartId); chartContainer.innerHTML = '';
+            const maxValue = Math.max(...data.map(item => item.count));
+            data.forEach((item, index) => {
+                const bar = document.createElement('div'); bar.className = 'bar';
+                bar.style.height = `${(item.count / maxValue) * 180}px`;
+                bar.style.backgroundColor = Array.isArray(colors) ? colors[index] : colors;
+                bar.innerHTML = `<div class="bar-percentage">${item.percentage}%</div><div class="bar-value">${item.count}</div><div class="bar-label">${item.name}</div>`;
+                chartContainer.appendChild(bar);
+            });
+        }
+        function renderLegend(legendId, data, colors) {
+            const legendContainer = document.getElementById(legendId); legendContainer.innerHTML = '';
+            data.forEach((item, index) => {
+                const legendItem = document.createElement('div'); legendItem.className = 'legend-item';
+                const colorBox = document.createElement('div'); colorBox.className = 'legend-color';
+                colorBox.style.backgroundColor = Array.isArray(colors) ? colors[index] : colors;
+                const label = document.createElement('span');
+                label.textContent = `${item.name}: ${item.count} siswa (${item.percentage}%)`;
+                legendItem.appendChild(colorBox); legendItem.appendChild(label); legendContainer.appendChild(legendItem);
+            });
+        }
+        function renderSummary(summaryId, data, type) {
+            const summaryContainer = document.getElementById(summaryId); summaryContainer.innerHTML = '';
+            const totalStudents = studentsData.length;
+            let summaryHTML = `<h4>Ringkasan Laporan</h4><p>Total siswa: ${totalStudents} siswa</p>`;
+            if (type === 'kelas') {
+                const maxClass = data.reduce((max, item) => item.count > max.count ? item : max, data[0]);
+                const minClass = data.reduce((min, item) => item.count < min.count ? item : min, data[0]);
+                summaryHTML += `<p>Kelas terbanyak: ${maxClass.name} (${maxClass.count} siswa)</p><p>Kelas tersedikit: ${minClass.name} (${minClass.count} siswa)</p>`;
+            } else if (type === 'level') {
+                const maxLevel = data.reduce((max, item) => item.count > max.count ? item : max, data[0]);
+                const minLevel = data.reduce((min, item) => item.count < min.count ? item : min, data[0]);
+                summaryHTML += `<p>Level terbanyak: ${maxLevel.name} (${maxLevel.count} siswa)</p><p>Level tersedikit: ${minLevel.name} (${minLevel.count} siswa)</p>`;
+            } else if (type === 'guru') {
+                const maxGuru = data.reduce((max, item) => item.count > max.count ? item : max, data[0]);
+                const minGuru = data.reduce((min, item) => item.count < min.count ? item : min, data[0]);
+                summaryHTML += `<p>Guru dengan siswa terbanyak: ${maxGuru.name} (${maxGuru.count} siswa)</p><p>Guru dengan siswa tersedikit: ${minGuru.name} (${minGuru.count} siswa)</p>`;
+            }
+            summaryContainer.innerHTML = summaryHTML;
+        }
+        function renderStackedChart(chartId, data) {
+            const chartContainer = document.getElementById(chartId); chartContainer.innerHTML = '';
+            const colors = ['#e74c3c', '#f39c12', '#2ecc71'];
+            const maxValue = Math.max(...data.map(item => item.total));
+            data.forEach((item) => {
+                const barContainer = document.createElement('div');
+                barContainer.style.cssText = 'flex: 1; margin: 0 5px; display: flex; flex-direction: column-reverse; height: 200px; position: relative;';
+                const levels = [{ count: item.level1 }, { count: item.level2 }, { count: item.level3 }];
+                levels.forEach((level, i) => {
+                    if (level.count > 0) {
+                        const levelBar = document.createElement('div');
+                        levelBar.style.cssText = `height: ${(level.count / maxValue) * 180}px; background-color: ${colors[i]}; border-radius: 3px 3px 0 0;`;
+                        barContainer.appendChild(levelBar);
+                    }
+                });
+                const label = document.createElement('div'); label.className = 'bar-label'; label.textContent = item.name; label.style.cssText = 'position: absolute; bottom: -25px; left: 0; right: 0; text-align: center;';
+                const totalValue = document.createElement('div'); totalValue.className = 'bar-value'; totalValue.textContent = item.total; totalValue.style.cssText = 'position: absolute; top: -25px; left: 0; right: 0; text-align: center; font-weight: bold;';
+                barContainer.appendChild(label); barContainer.appendChild(totalValue);
+                chartContainer.appendChild(barContainer);
+            });
+        }
+        function renderStackedLegend(legendId) {
+            const legendContainer = document.getElementById(legendId); legendContainer.innerHTML = '';
+            const colors = ['#e74c3c', '#f39c12', '#2ecc71']; const labels = ['Level 1', 'Level 2', 'Level 3'];
+            labels.forEach((label, index) => {
+                const legendItem = document.createElement('div'); legendItem.className = 'legend-item';
+                const colorBox = document.createElement('div'); colorBox.className = 'legend-color'; colorBox.style.backgroundColor = colors[index];
+                const labelText = document.createElement('span'); labelText.textContent = label;
+                legendItem.appendChild(colorBox); legendItem.appendChild(labelText); legendContainer.appendChild(legendItem);
+            });
+        }
+        function renderAllSummary(summaryId, data) {
+            const summaryContainer = document.getElementById(summaryId); summaryContainer.innerHTML = '';
+            const totalStudents = studentsData.length;
+            const totalLevel1 = data.reduce((sum, item) => sum + item.level1, 0);
+            const totalLevel2 = data.reduce((sum, item) => sum + item.level2, 0);
+            const totalLevel3 = data.reduce((sum, item) => sum + item.level3, 0);
+            let summaryHTML = `<h4>Ringkasan Laporan</h4><p>Total Siswa: ${totalStudents} siswa</p>`;
+            summaryHTML += `<p>Total Level 1: ${totalLevel1} siswa (${(totalLevel1 / totalStudents * 100).toFixed(1)}%)</p>`;
+            summaryHTML += `<p>Total Level 2: ${totalLevel2} siswa (${(totalLevel2 / totalStudents * 100).toFixed(1)}%)</p>`;
+            summaryHTML += `<p>Total Level 3: ${totalLevel3} siswa (${(totalLevel3 / totalStudents * 100).toFixed(1)}%)</p>`;
+            const maxClass = data.reduce((max, item) => item.total > max.total ? item : max, data[0]);
+            const minClass = data.reduce((min, item) => item.total < min.total ? item : min, data[0]);
+            summaryHTML += `<p>Kelas terbanyak: ${maxClass.name} (${maxClass.total} siswa)</p><p>Kelas tersedikit: ${minClass.name} (${minClass.total} siswa)</p>`;
+            summaryContainer.innerHTML = summaryHTML;
+        }
+        
+        // --- CETAK & EKSPOR ---
+        function printStudentReport(studentId) {
+            const student = studentsData.find(s => s.id === studentId); if (!student) return;
+            const guru = guruData.find(g => g.id == student.guru); const guruName = guru ? guru.name : '-';
+            const printDiv = document.createElement('div'); printDiv.className = 'print-content';
+            printDiv.innerHTML = `
+                <div class="print-header"><div class="print-title">Laporan Levelisasi Numerasi Siswa</div></div>
+                <div class="print-info">
+                    <div class="print-data">
+                        <div class="print-data-item"><span class="print-data-label">Nama Siswa:</span><span class="print-data-value">${student.name}</span></div>
+                        <div class="print-data-item"><span class="print-data-label">Kelas:</span><span class="print-data-value">${student.class}</span></div>
+                        <div class="print-data-item"><span class="print-data-label">Level Saat Ini:</span><span class="print-data-value">Level ${student.level}</span></div>
+                        <div class="print-data-item"><span class="print-data-label">Guru Pembimbing:</span><span class="print-data-value">${guruName}</span></div>
+                    </div>
+                </div>
+                <div class="print-footer"><p>Dicetak pada: ${new Date().toLocaleString('id-ID')}</p></div>
+            `;
+            document.body.appendChild(printDiv);
+            setTimeout(() => { window.print(); setTimeout(() => { document.body.removeChild(printDiv); }, 1000); }, 300);
+        }
+        
+        function createAndDownloadExcel(data, filename, sheetName) {
+            let htmlTable = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>${sheetName}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><style>table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:8px;text-align:left}th{background-color:#f2f2f2;font-weight:bold}tr:nth-child(even){background-color:#f9f9f9}.header{background-color:#4CAF50;color:white;font-weight:bold;text-align:center;font-size:16px}.subheader{background-color:#e6f2ff;font-weight:bold}.footer{font-style:italic;color:#666;font-size:12px}</style></head><body>`;
+            htmlTable += data;
+            htmlTable += `</body></html>`;
+            const blob = new Blob([htmlTable], { type: 'application/vnd.ms-excel' });
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a'); link.href = url; link.download = filename;
+            document.body.appendChild(link); link.click();
+            document.body.removeChild(link); window.URL.revokeObjectURL(url);
+            showNotification(`Data berhasil diekspor ke ${filename}`);
+        }
+        
+        function exportAllStudents() {
+            const currentDate = new Date().toLocaleDateString('id-ID');
+            let tableHTML = `<table><tr class="header"><td colspan="6">DATA LEVELISASI NUMERASI KELAS 2</td></tr><tr class="subheader"><td colspan="6">Tanggal Ekspor: ${currentDate}</td></tr><tr><th>No</th><th>ID Siswa</th><th>Nama Siswa</th><th>Kelas</th><th>Level</th><th>Guru Pembimbing</th></tr>`;
+            let no = 1;
+            studentsData.forEach(student => {
+                const guru = guruData.find(g => g.id == student.guru); const guruName = guru ? guru.name : '-';
+                tableHTML += `<tr><td>${no++}</td><td>${student.id}</td><td>${student.name}</td><td>${student.class}</td><td>Level ${student.level}</td><td>${guruName}</td></tr>`;
+            });
+            tableHTML += `<tr class="footer"><td colspan="6">Total Siswa: ${studentsData.length} siswa</td></tr></table>`;
+            createAndDownloadExcel(tableHTML, `Data_Siswa_Levelisasi_Numerasi_${new Date().toISOString().slice(0, 10)}.xls`, "Data Siswa");
+        }
+        function exportDataByClass() {
+            const currentDate = new Date().toLocaleDateString('id-ID'); const classes = ["2A", "2B", "2C", "2D", "2E", "2F"];
+            let tableHTML = `<table><tr class="header"><td colspan="6">DATA LEVELISASI NUMERASI KELAS 2 PER KELAS</td></tr><tr class="subheader"><td colspan="6">Tanggal Ekspor: ${currentDate}</td></tr><tr><th>No</th><th>Kelas</th><th>ID Siswa</th><th>Nama Siswa</th><th>Level</th><th>Guru Pembimbing</th></tr>`;
+            let no = 1;
+            classes.forEach(className => {
+                const classStudents = studentsData.filter(student => student.class === className);
+                classStudents.forEach(student => {
+                    const guru = guruData.find(g => g.id == student.guru); const guruName = guru ? guru.name : '-';
+                    tableHTML += `<tr><td>${no++}</td><td>${className}</td><td>${student.id}</td><td>${student.name}</td><td>Level ${student.level}</td><td>${guruName}</td></tr>`;
+                });
+            });
+            tableHTML += `<tr class="footer"><td colspan="6">Total Siswa: ${studentsData.length} siswa</td></tr></table>`;
+            createAndDownloadExcel(tableHTML, `Data_Siswa_per_Kelas_Levelisasi_Numerasi_${new Date().toISOString().slice(0, 10)}.xls`, "Data per Kelas");
+        }
+        function exportDataByGuru() {
+            const currentDate = new Date().toLocaleDateString('id-ID');
+            let tableHTML = `<table><tr class="header"><td colspan="6">DATA LEVELISASI NUMERASI KELAS 2 PER GURU PEMBIMBING</td></tr><tr class="subheader"><td colspan="6">Tanggal Ekspor: ${currentDate}</td></tr><tr><th>No</th><th>Guru Pembimbing</th><th>ID Siswa</th><th>Nama Siswa</th><th>Kelas</th><th>Level</th></tr>`;
+            let no = 1;
+            guruData.forEach(guru => {
+                const guruStudents = studentsData.filter(student => student.guru == guru.id);
+                guruStudents.forEach(student => {
+                    tableHTML += `<tr><td>${no++}</td><td>${guru.name}</td><td>${student.id}</td><td>${student.name}</td><td>${student.class}</td><td>Level ${student.level}</td></tr>`;
+                });
+            });
+            tableHTML += `<tr class="footer"><td colspan="6">Total Siswa: ${studentsData.length} siswa</td></tr></table>`;
+            createAndDownloadExcel(tableHTML, `Data_Siswa_per_Guru_Levelisasi_Numerasi_${new Date().toISOString().slice(0, 10)}.xls`, "Data per Guru");
+        }
+        function exportDataByLevel() {
+            const currentDate = new Date().toLocaleDateString('id-ID'); const levels = [1, 2, 3];
+            let tableHTML = `<table><tr class="header"><td colspan="6">DATA LEVELISASI NUMERASI KELAS 2 PER LEVEL</td></tr><tr class="subheader"><td colspan="6">Tanggal Ekspor: ${currentDate}</td></tr><tr><th>No</th><th>Level</th><th>ID Siswa</th><th>Nama Siswa</th><th>Kelas</th><th>Guru Pembimbing</th></tr>`;
+            let no = 1;
+            levels.forEach(level => {
+                const levelStudents = studentsData.filter(student => student.level == level);
+                levelStudents.forEach(student => {
+                    const guru = guruData.find(g => g.id == student.guru); const guruName = guru ? guru.name : '-';
+                    tableHTML += `<tr><td>${no++}</td><td>Level ${level}</td><td>${student.id}</td><td>${student.name}</td><td>${student.class}</td><td>${guruName}</td></tr>`;
+                });
+            });
+            tableHTML += `<tr class="footer"><td colspan="6">Total Siswa: ${studentsData.length} siswa</td></tr></table>`;
+            createAndDownloadExcel(tableHTML, `Data_Siswa_per_Level_Levelisasi_Numerasi_${new Date().toISOString().slice(0, 10)}.xls`, "Data per Level");
+        }
+        
+        // Inisialisasi aplikasi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
